@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # MedExplain
 
 A full-stack medical explanation platform with a frontend, backend API, and supporting documentation.
@@ -10,4 +9,4 @@ A full-stack medical explanation platform with a frontend, backend API, and supp
 - docs/ - project documentation
 =======
 # MedExplain
->>>>>>> 6d556d0865d464b9d53095446968c807f159fbd4
+
