@@ -1,11 +1,9 @@
-import { BrowserRouter } from 'react-router-dom';
-import AppRoutes from './routes/AppRoutes';
-
 function App() {
   return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <div style={{ padding: "2rem" }}>
+      <h1>MedExplain AI</h1>
+      <p>Frontend is running successfully 🚀</p>
+    </div>
   );
 }
 
