@@ -1,9 +1,29 @@
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+
 function App() {
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>MedExplain AI</h1>
-      <p>Frontend is running successfully 🚀</p>
-    </div>
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <div style={{ padding: "2rem" }}>
+                <h1>Dashboard</h1>
+                <p>Welcome — you're logged in.</p>
+              </div>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
