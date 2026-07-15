@@ -4,6 +4,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AIChat from "./pages/AIChat";
+import UploadPrescription from "./pages/UploadPrescription";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -15,10 +17,7 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <div style={{ padding: "2rem" }}>
-                <h1>Dashboard</h1>
-                <p>Welcome — you're logged in.</p>
-              </div>
+              <Dashboard />
             </ProtectedRoute>
           }
         />
@@ -27,6 +26,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AIChat />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/upload-prescription"
+          element={
+            <ProtectedRoute>
+              <UploadPrescription />
             </ProtectedRoute>
           }
         />

@@ -2,6 +2,7 @@ import { useState, FormEvent, useRef, useEffect } from "react";
 import { ChatMessage } from "../types/chat";
 import { sendMessage } from "../services/chatService";
 import { useAuth } from "../context/AuthContext";
+import Navbar from "../components/Navbar";
 
 export default function AIChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -37,15 +38,7 @@ export default function AIChat() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      <header className="bg-white border-b px-6 py-4 flex justify-between items-center">
-        <h1 className="text-lg font-semibold text-gray-800">MedExplain AI — Symptom Chat</h1>
-        <button
-          onClick={logout}
-          className="text-sm text-gray-500 hover:text-gray-700"
-        >
-          Log out
-        </button>
-      </header>
+      <Navbar />
 
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
         {messages.length === 0 && (

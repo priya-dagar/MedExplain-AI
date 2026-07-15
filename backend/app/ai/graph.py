@@ -1,4 +1,5 @@
 from typing import TypedDict
+from sqlalchemy.orm import Session
 from langgraph.graph import StateGraph, END
 from app.ai.agents.supervisor import classify_intent
 from app.ai.agents.symptom_agent import run_symptom_agent
@@ -8,6 +9,8 @@ class AgentState(TypedDict):
     user_message: str
     intent: str
     response: str
+    user_id: int
+    db: Session
 
 
 def supervisor_node(state: AgentState) -> AgentState:
@@ -16,7 +19,7 @@ def supervisor_node(state: AgentState) -> AgentState:
 
 
 def symptom_node(state: AgentState) -> AgentState:
-    reply = run_symptom_agent(state["user_message"])
+    reply = run_symptom_agent(state["user_message"], state["db"], state["user_id"])
     return {**state, "response": reply}
 
 
