@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AIChat from "./pages/AIChat";
 
 function App() {
   return (
@@ -18,6 +19,14 @@ function App() {
                 <h1>Dashboard</h1>
                 <p>Welcome — you're logged in.</p>
               </div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <AIChat />
             </ProtectedRoute>
           }
         />

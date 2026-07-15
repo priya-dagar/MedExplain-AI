@@ -5,6 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from app.core.config import settings
 from app.core.database import Base
 from app.auth.models import User  # noqa: F401 — import so Alembic sees this model
+from app.prescription.models import Prescription  # noqa: F401 — import so Alembic sees this model
 
 from logging.config import fileConfig
 
