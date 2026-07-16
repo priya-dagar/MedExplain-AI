@@ -6,6 +6,8 @@ from app.core.config import settings
 from app.core.database import Base
 from app.auth.models import User  # noqa: F401 — import so Alembic sees this model
 from app.prescription.models import Prescription  # noqa: F401 — import so Alembic sees this model
+from app.symptom.models import ChatHistory  # noqa: F401 — import so Alembic sees this model
+from app.health_record.models import HealthRecord  # noqa: F401
 
 from logging.config import fileConfig
 

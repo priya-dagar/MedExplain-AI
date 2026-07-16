@@ -6,6 +6,8 @@ from app.auth.routes import get_current_user
 from app.auth.models import User
 from app.prescription.schemas import PrescriptionResponse
 from app.prescription.service import process_prescription_upload, get_user_prescriptions
+from app.health_record.service import add_health_record
+
 
 router = APIRouter(prefix="/api/prescription", tags=["prescription"])
 
@@ -33,6 +35,15 @@ async def upload_prescription(
         image_bytes=image_bytes,
         mime_type=file.content_type,
     )
+
+    add_health_record(
+        db=db,
+        user_id=current_user.id,
+        record_type="prescription",
+        source_id=prescription.id,
+        summary=prescription.ai_summary[:100],
+    )
+
     return prescription
 
 

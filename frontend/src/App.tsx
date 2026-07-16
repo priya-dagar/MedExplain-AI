@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import AIChat from "./pages/AIChat";
 import UploadPrescription from "./pages/UploadPrescription";
 import Dashboard from "./pages/Dashboard";
+import HealthRecords from "./pages/HealthRecords";
 
 function App() {
   return (
@@ -34,6 +35,14 @@ function App() {
           element={
             <ProtectedRoute>
               <UploadPrescription />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/health-records"
+          element={
+            <ProtectedRoute>
+              <HealthRecords />
             </ProtectedRoute>
           }
         />

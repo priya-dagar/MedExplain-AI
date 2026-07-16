@@ -1,6 +1,8 @@
 from langchain_core.tools import tool
 from sqlalchemy.orm import Session
 from app.prescription.models import Prescription
+from app.health_record.service import get_timeline
+
 
 
 def make_prescription_history_tool(db: Session, user_id: int):
@@ -23,3 +25,13 @@ def make_prescription_history_tool(db: Session, user_id: int):
         return "\n".join(summary_lines)
 
     return get_prescription_history
+
+def make_health_timeline_tool(db: Session, user_id: int):
+    @tool
+    def get_health_timeline() -> str:
+        """Get the user's full health record timeline (symptoms + prescriptions)."""
+        records = get_timeline(db, user_id)
+        if not records:
+            return "No health records found."
+        return "\n".join(f"[{r.created_at.date()}] {r.record_type}: {r.summary}" for r in records)
+    return get_health_timeline

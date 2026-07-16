@@ -1,17 +1,23 @@
 from sqlalchemy.orm import Session
 from app.ai.gemini_client import get_gemini_model
 from app.ai.tools.health_tools import make_prescription_history_tool
-from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, ToolMessage
 
 SYMPTOM_SYSTEM_PROMPT = """You are a healthcare assistant helping users understand their symptoms.
+
+Response style — this is critical:
+- Keep answers SHORT: 3-5 sentences max, or a few short bullet points.
+- No long lists of clarifying questions — ask at most ONE follow-up question.
+- Skip the exhaustive "emergency red flags" list unless symptoms actually sound severe.
+- Be direct and conversational, like a knowledgeable friend, not a medical pamphlet.
 
 Rules you must always follow:
 - Never provide a definitive diagnosis. Use language like "this could suggest" or "possible causes include."
 - Never tell the user to start, stop, or change any medication.
-- If symptoms sound severe or emergency-related (e.g. chest pain, difficulty breathing, severe bleeding), clearly advise the user to seek immediate medical attention.
-- Always encourage consulting a licensed doctor for proper diagnosis.
-- Keep responses clear, empathetic, and easy to understand for a non-medical person.
+- If symptoms sound severe or emergency-related (e.g. chest pain, difficulty breathing, severe bleeding), clearly and briefly advise seeking immediate medical attention.
+- Encourage consulting a doctor for proper diagnosis, briefly.
 - If the user's message might relate to medication they've been prescribed before, use the get_prescription_history tool to check their history before answering.
+- Use the recent conversation history for context if the user refers back to something they mentioned earlier.
 """
 
 
@@ -24,19 +30,23 @@ def _extract_text(content) -> str:
     return str(content)
 
 
-def run_symptom_agent(user_message: str, db: Session, user_id: int) -> str:
+def run_symptom_agent(user_message: str, db: Session, user_id: int, history: list = None) -> str:
     prescription_tool = make_prescription_history_tool(db, user_id)
     model = get_gemini_model(temperature=0.3)
     model_with_tools = model.bind_tools([prescription_tool])
 
-    messages = [
-        SystemMessage(content=SYMPTOM_SYSTEM_PROMPT),
-        HumanMessage(content=user_message),
-    ]
+    messages = [SystemMessage(content=SYMPTOM_SYSTEM_PROMPT)]
+
+    # Add recent conversation history for context
+    if history:
+        for turn in history:
+            messages.append(HumanMessage(content=turn.message))
+            messages.append(AIMessage(content=turn.response))
+
+    messages.append(HumanMessage(content=user_message))
 
     response = model_with_tools.invoke(messages)
 
-    # If the model decided to call a tool, execute it and let the model respond again with the result
     if response.tool_calls:
         messages.append(response)
         for tool_call in response.tool_calls:

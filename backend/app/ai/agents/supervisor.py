@@ -1,12 +1,15 @@
 from app.ai.gemini_client import get_gemini_model
 from langchain_core.messages import SystemMessage, HumanMessage
 
-SUPERVISOR_PROMPT = """You are a routing assistant. Your only job is to classify the user's message into exactly one category:
+SUPERVISOR_PROMPT = """You are a routing assistant. Classify the user's message into exactly one category:
 
-- "symptom" — if the user is describing a health symptom, feeling unwell, or asking about a medical condition
-- "general" — for anything else (greetings, unclear messages, unrelated questions)
+- "symptom" — describing a health symptom, feeling unwell, or a follow-up on a prior symptom conversation
+- "health_record" — asking about their health history, timeline, past symptoms/prescriptions, or a summary of their records
+- "general" — anything else
 
-Respond with only one word: symptom or general. No explanation.
+Use the recent conversation history to judge follow-up messages correctly.
+
+Respond with only one word: symptom, health_record, or general. No explanation.
 """
 
 def _extract_text(content) -> str:
@@ -18,12 +21,19 @@ def _extract_text(content) -> str:
     return str(content)
 
 
-def classify_intent(user_message: str) -> str:
+def classify_intent(user_message: str, history: list = None) -> str:
     model = get_gemini_model(temperature=0)
-    messages = [
-        SystemMessage(content=SUPERVISOR_PROMPT),
-        HumanMessage(content=user_message),
-    ]
+
+    messages = [SystemMessage(content=SUPERVISOR_PROMPT)]
+
+    if history:
+        history_lines = "\n".join(
+            f"User: {turn.message}\nAssistant: {turn.response}" for turn in history
+        )
+        messages.append(HumanMessage(content=f"Recent conversation:\n{history_lines}"))
+
+    messages.append(HumanMessage(content=f"Latest message: {user_message}"))
+
     response = model.invoke(messages)
     intent = _extract_text(response.content).strip().lower()
-    return intent if intent in ("symptom", "general") else "general"
+    return intent if intent in ("symptom", "health_record", "general") else "general"

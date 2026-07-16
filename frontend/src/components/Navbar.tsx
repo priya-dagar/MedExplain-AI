@@ -26,6 +26,7 @@ export default function Navbar() {
           {navLink("/dashboard", "Dashboard")}
           {navLink("/chat", "AI Chat")}
           {navLink("/upload-prescription", "Upload Prescription")}
+          {navLink("/health-records", "Health Records")}
         </div>
       </div>
       <div className="flex items-center gap-4">

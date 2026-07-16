@@ -4,6 +4,8 @@ from app.core.config import settings
 from app.auth.routes import router as auth_router
 from app.symptom.routes import router as symptom_router
 from app.prescription.routes import router as prescription_router
+from app.health_record.routes import router as health_record_router
+
 
 app = FastAPI(
     title="MedExplain AI",
@@ -21,6 +23,8 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(symptom_router)
 app.include_router(prescription_router)
+app.include_router(health_record_router)
+
 
 
 @app.get("/")

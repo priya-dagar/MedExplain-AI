@@ -1,20 +1,29 @@
 import { useState, FormEvent, useRef, useEffect } from "react";
 import { ChatMessage } from "../types/chat";
-import { sendMessage } from "../services/chatService";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
+import { sendMessage, getChatHistory } from "../services/chatService";
 
 export default function AIChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState("");
-  const { logout } = useAuth();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+  
+  useEffect(() => {
+    getChatHistory().then((history) => {
+      const loaded: ChatMessage[] = history.flatMap((turn) => [
+        { role: "user", content: turn.message },
+        { role: "assistant", content: turn.response },
+      ]);
+      setMessages(loaded);
+    });
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
