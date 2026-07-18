@@ -29,13 +29,7 @@ def chat(
         "history": history,
     })
 
-    save_chat_turn(
-        db=db,
-        user_id=current_user.id,
-        message=request.message,
-        response=result["response"],
-        intent=result["intent"],
-    )
+    
     saved = save_chat_turn(db=db, user_id=current_user.id, message=request.message, response=result["response"], intent=result["intent"])
 
     if result["intent"] == "symptom":

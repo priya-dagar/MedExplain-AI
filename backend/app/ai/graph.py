@@ -32,9 +32,6 @@ def general_node(state: AgentState) -> AgentState:
     return {**state, "response": "I'm here to help with health-related questions. Could you tell me more about what you're experiencing?"}
 
 
-def route_after_supervisor(state: AgentState) -> str:
-    return "symptom" if state["intent"] == "symptom" else "general"
-
 
 def build_graph():
     graph = StateGraph(AgentState)

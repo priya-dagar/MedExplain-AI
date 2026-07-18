@@ -8,7 +8,7 @@ from app.health_record.service import get_timeline
 def make_prescription_history_tool(db: Session, user_id: int):
     @tool
     def get_prescription_history() -> str:
-        """Fetch the user's past prescription records, including medicines and AI-generated explanations. Use this when the user's question might relate to medication they've previously been prescribed, or when knowing their prescription history would help give a more relevant answer."""
+        """Fetch the user's past prescription records, including medicines, dosages, and AI-generated explanations. ALWAYS call this for any symptom, health, or medication-related question — the user's prescription history is often relevant even if not explicitly mentioned."""
         prescriptions = (
             db.query(Prescription)
             .filter(Prescription.user_id == user_id)
@@ -21,7 +21,7 @@ def make_prescription_history_tool(db: Session, user_id: int):
 
         summary_lines = []
         for p in prescriptions:
-            summary_lines.append(f"- ({p.created_at.date()}) {p.ai_summary[:200]}")
+            summary_lines.append(f"- ({p.created_at.date()}) {p.ai_summary}")
         return "\n".join(summary_lines)
 
     return get_prescription_history

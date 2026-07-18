@@ -3,11 +3,11 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 SUPERVISOR_PROMPT = """You are a routing assistant. Classify the user's message into exactly one category:
 
-- "symptom" — describing a health symptom, feeling unwell, or a follow-up on a prior symptom conversation
+- "symptom" — describing a health symptom, feeling unwell, a follow-up on a prior symptom conversation, OR asking about diet, food, activity, lifestyle, or medication-related questions (e.g. "should I drink coffee", "can I exercise", "is this food okay") — these often relate to prescriptions or health advice and need the same handling.
 - "health_record" — asking about their health history, timeline, past symptoms/prescriptions, or a summary of their records
-- "general" — anything else
+- "general" — anything else (greetings, unrelated small talk, non-health questions)
 
-Use the recent conversation history to judge follow-up messages correctly.
+Use the recent conversation history to judge follow-up messages correctly — if the user recently discussed a prescription or symptom, treat closely related follow-ups as "symptom" even if worded generically.
 
 Respond with only one word: symptom, health_record, or general. No explanation.
 """

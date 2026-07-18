@@ -37,9 +37,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(currentUser);
   };
 
-  const signup = async (data: SignupPayload) => {
-    await authService.signup(data);
-    await login({ email: data.email, password: data.password });
+  const signup = async (data: SignupPayload): Promise<void> => {
+  await authService.signup(data);
+  // no auto-login — user must verify OTP first
   };
 
   const logout = () => {

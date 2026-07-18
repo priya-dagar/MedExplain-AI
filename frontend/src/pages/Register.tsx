@@ -18,7 +18,7 @@ export default function Register() {
     setIsSubmitting(true);
     try {
       await signup({ name, email, password });
-      navigate("/dashboard");
+      navigate("/verify-otp", { state: { email } });
     } catch (err: any) {
       setError(err.response?.data?.detail || "Something went wrong. Please try again.");
     } finally {

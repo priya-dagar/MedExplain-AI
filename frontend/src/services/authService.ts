@@ -15,3 +15,13 @@ export const getCurrentUser = async (): Promise<User> => {
   const response = await api.get<User>("/api/auth/me");
   return response.data;
 };
+
+export const verifyOtp = async (email: string, otp: string): Promise<{ message: string }> => {
+  const response = await api.post("/api/auth/verify-otp", null, { params: { email, otp } });
+  return response.data;
+};
+
+export const resendOtp = async (email: string): Promise<{ message: string }> => {
+  const response = await api.post("/api/auth/resend-otp", null, { params: { email } });
+  return response.data;
+};

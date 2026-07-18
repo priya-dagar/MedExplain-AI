@@ -26,7 +26,7 @@ class UserResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-
+    
 # What we send back after successful login/register
 class Token(BaseModel):
     access_token: str

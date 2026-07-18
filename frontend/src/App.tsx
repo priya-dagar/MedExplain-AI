@@ -7,6 +7,8 @@ import AIChat from "./pages/AIChat";
 import UploadPrescription from "./pages/UploadPrescription";
 import Dashboard from "./pages/Dashboard";
 import HealthRecords from "./pages/HealthRecords";
+import VerifyOtp from "./pages/VerifyOtp";
+
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+
         <Route
           path="/dashboard"
           element={
