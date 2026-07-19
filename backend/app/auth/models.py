@@ -1,7 +1,8 @@
-from sqlalchemy import String, DateTime, Boolean, Column
+from sqlalchemy import String, DateTime, Boolean, Column, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime, timezone
 from app.core.database import Base
+
 
 
 class User(Base):
@@ -15,6 +16,11 @@ class User(Base):
     is_verified = Column(Boolean, default=False, nullable=False)
     otp_code = Column(String, nullable=True)
     otp_expires_at = Column(DateTime, nullable=True)
+    age = Column(Integer, nullable=True)
+    gender = Column(String, nullable=True)
+    blood_group = Column(String, nullable=True)
+    allergies = Column(String, nullable=True)  # comma-separated, e.g. "Penicillin,Shellfish"
+    medical_history = Column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )

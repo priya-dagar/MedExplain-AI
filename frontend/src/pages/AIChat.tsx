@@ -1,10 +1,20 @@
 import { useState, FormEvent, useRef, useEffect } from "react";
 import { ChatMessage } from "../types/chat";
 import { useAuth } from "../context/AuthContext";
-import Navbar from "../components/Navbar";
 import { sendMessage, getChatHistory } from "../services/chatService";
 
+const SUGGESTED_CHIPS = [
+  "What medication can I take?",
+  "Could it be related to my Metformin?",
+  "Add to my health records",
+];
+
+function formatTime(date: Date) {
+  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+
 export default function AIChat() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -14,7 +24,7 @@ export default function AIChat() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  
+
   useEffect(() => {
     getChatHistory().then((history) => {
       const loaded: ChatMessage[] = history.flatMap((turn) => [
@@ -25,18 +35,17 @@ export default function AIChat() {
     });
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isSending) return;
+  const submitMessage = async (text: string) => {
+    if (!text.trim() || isSending) return;
 
-    const userMessage: ChatMessage = { role: "user", content: input };
+    const userMessage: ChatMessage = { role: "user", content: text };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setError("");
     setIsSending(true);
 
     try {
-      const data = await sendMessage(userMessage.content);
+      const data = await sendMessage(text);
       setMessages((prev) => [...prev, { role: "assistant", content: data.response }]);
     } catch (err: any) {
       setError(err.response?.data?.detail || "Something went wrong. Please try again.");
@@ -45,38 +54,99 @@ export default function AIChat() {
     }
   };
 
-  return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      <Navbar />
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    submitMessage(input);
+  };
 
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+  const handleNewChat = () => {
+    // Clears the visible thread only — does not delete server-side chat_history.
+    setMessages([]);
+    setError("");
+  };
+
+  const userInitial = user?.name?.[0]?.toUpperCase() ?? "U";
+
+  return (
+    <div className="flex flex-col h-[calc(100vh-4rem)]">
+      {/* New chat action */}
+      <div className="flex justify-end px-6 pt-4">
+        <button
+          onClick={handleNewChat}
+          className="flex items-center gap-1.5 text-sm font-medium text-[#4a4a44] border border-[#d8d5cb] rounded-full px-4 py-1.5 hover:bg-[#f1efe6] transition-colors"
+        >
+          <i className="ti ti-refresh text-base" aria-hidden="true" />
+          New chat
+        </button>
+      </div>
+
+      {/* Disclaimer banner */}
+      <div className="flex justify-center px-6 pt-3">
+        <span className="text-xs text-[#8a8a80] border border-[#e5e2d8] rounded-full px-4 py-1.5 bg-white">
+          Not a substitute for professional medical advice · For emergencies, call 112
+        </span>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
         {messages.length === 0 && (
-          <p className="text-gray-400 text-sm text-center mt-8">
-            Describe how you're feeling, and I'll try to help you understand it.
-          </p>
+          <div className="flex gap-3 max-w-2xl">
+            <div className="w-9 h-9 rounded-full bg-[#1a4d4a] flex items-center justify-center flex-shrink-0">
+              <i className="ti ti-sparkles text-white text-base" aria-hidden="true" />
+            </div>
+            <div className="bg-white border border-[#e5e2d8] rounded-2xl rounded-tl-sm px-5 py-4 text-[#3d3d3a] text-sm leading-relaxed">
+              Hello{user ? `, ${user.name.split(" ")[0]}` : ""}! I'm your AI Health Companion. I
+              can help you understand symptoms, explain your prescriptions, or answer general
+              health questions. How can I help you today?
+            </div>
+          </div>
         )}
 
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+            className={`flex gap-3 ${msg.role === "user" ? "justify-end" : ""}`}
           >
-            <div
-              className={`max-w-[75%] px-4 py-3 rounded-lg whitespace-pre-wrap text-sm ${
-                msg.role === "user"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white border border-gray-200 text-gray-800"
-              }`}
-            >
-              {msg.content}
+            {msg.role === "assistant" && (
+              <div className="w-9 h-9 rounded-full bg-[#1a4d4a] flex items-center justify-center flex-shrink-0">
+                <i className="ti ti-sparkles text-white text-base" aria-hidden="true" />
+              </div>
+            )}
+
+            <div className="max-w-[70%]">
+              <div
+                className={`px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                  msg.role === "user"
+                    ? "bg-[#1a4d4a] text-white rounded-2xl rounded-tr-sm"
+                    : "bg-white border border-[#e5e2d8] text-[#3d3d3a] rounded-2xl rounded-tl-sm"
+                }`}
+              >
+                {msg.content}
+              </div>
+              <p
+                className={`text-xs text-[#8a8a80] mt-1 ${
+                  msg.role === "user" ? "text-right" : ""
+                }`}
+              >
+                {formatTime(new Date())}
+              </p>
             </div>
+
+            {msg.role === "user" && (
+              <div className="w-9 h-9 rounded-full bg-teal-600 flex items-center justify-center flex-shrink-0 text-white text-sm font-semibold">
+                {userInitial}
+              </div>
+            )}
           </div>
         ))}
 
         {isSending && (
-          <div className="flex justify-start">
-            <div className="bg-white border border-gray-200 px-4 py-3 rounded-lg text-sm text-gray-400">
-              Thinking...
+          <div className="flex gap-3">
+            <div className="w-9 h-9 rounded-full bg-[#1a4d4a] flex items-center justify-center flex-shrink-0">
+              <i className="ti ti-sparkles text-white text-base" aria-hidden="true" />
+            </div>
+            <div className="bg-white border border-[#e5e2d8] rounded-2xl rounded-tl-sm px-5 py-3.5 text-sm text-[#8a8a80]">
+              Thinking…
             </div>
           </div>
         )}
@@ -88,21 +158,44 @@ export default function AIChat() {
         <div className="px-6 py-2 text-sm text-red-600 bg-red-50">{error}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="border-t bg-white px-6 py-4 flex gap-3">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Describe your symptoms..."
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          type="submit"
-          disabled={isSending || !input.trim()}
-          className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 disabled:opacity-50"
-        >
-          Send
-        </button>
+      {/* Suggested chips */}
+      <div className="flex flex-wrap gap-2 px-6 pb-3">
+        {SUGGESTED_CHIPS.map((chip) => (
+          <button
+            key={chip}
+            onClick={() => submitMessage(chip)}
+            disabled={isSending}
+            className="flex items-center gap-1 text-sm text-[#4a4a44] border border-[#d8d5cb] rounded-full px-4 py-1.5 hover:bg-[#f1efe6] transition-colors disabled:opacity-50"
+          >
+            <i className="ti ti-chevron-right text-xs" aria-hidden="true" />
+            {chip}
+          </button>
+        ))}
+      </div>
+
+      {/* Input */}
+      <form onSubmit={handleSubmit} className="border-t border-[#e5e2d8] bg-white px-6 py-4">
+        <div className="flex items-center gap-3 bg-[#f5f3ed] rounded-full px-4 py-2">
+          <i className="ti ti-paperclip text-[#8a8a80] text-lg" aria-hidden="true" />
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message…"
+            className="flex-1 bg-transparent text-sm focus:outline-none"
+          />
+          <button
+            type="submit"
+            disabled={isSending || !input.trim()}
+            className="w-8 h-8 rounded-full bg-[#1a4d4a] text-white flex items-center justify-center disabled:opacity-40 transition-opacity"
+            aria-label="Send message"
+          >
+            <i className="ti ti-arrow-up text-base" aria-hidden="true" />
+          </button>
+        </div>
+        <p className="text-center text-xs text-[#8a8a80] mt-3">
+          MedExplain AI · Responses are AI-generated · Always verify with your doctor
+        </p>
       </form>
     </div>
   );

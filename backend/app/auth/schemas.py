@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
 from datetime import datetime
+from typing import Optional
 
 
 # What the client sends when registering
@@ -31,3 +32,24 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class ProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    blood_group: Optional[str] = None
+    allergies: Optional[str] = None
+    medical_history: Optional[str] = None
+
+class ProfileResponse(BaseModel):
+    name: str
+    email: str
+    age: Optional[int]
+    gender: Optional[str]
+    blood_group: Optional[str]
+    allergies: Optional[str]
+    medical_history: Optional[str]
+
+    class Config:
+        from_attributes = True

@@ -5,6 +5,10 @@ from app.auth.routes import router as auth_router
 from app.symptom.routes import router as symptom_router
 from app.prescription.routes import router as prescription_router
 from app.health_record.routes import router as health_record_router
+from app.profile.routes import router as profile_router
+from app.healthcare.routes import router as healthcare_router
+
+
 
 
 app = FastAPI(
@@ -24,6 +28,10 @@ app.include_router(auth_router)
 app.include_router(symptom_router)
 app.include_router(prescription_router)
 app.include_router(health_record_router)
+app.include_router(profile_router)
+app.include_router(healthcare_router)
+
+
 
 
 

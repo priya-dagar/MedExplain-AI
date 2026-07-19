@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.prescription.models import Prescription
-from app.prescription.cloudinary_service import upload_prescription_image
+from app.core.s3_config import upload_prescription_image
 from app.ai.agents.prescription_agent import run_prescription_agent
 
 

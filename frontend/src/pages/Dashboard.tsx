@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { getDashboardSummary } from "../services/healthRecordService";
@@ -14,8 +13,8 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
+    
+      
 
       <div className="max-w-5xl mx-auto px-6 py-10">
         <h1 className="text-2xl font-semibold text-gray-800">
@@ -77,6 +76,6 @@ export default function Dashboard() {
           </p>
         </div>
       </div>
-    </div>
+    
   );
 }
