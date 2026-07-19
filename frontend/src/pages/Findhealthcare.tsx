@@ -3,6 +3,16 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import api from "../services/api";
+import {
+  Search,
+  Navigation,
+  Building2,
+  MapPin,
+  ChevronRight,
+  X,
+  Phone,
+  Clock,
+} from "lucide-react";
 
 // Local Leaflet image imports are unreliable with Vite's asset handling —
 // pointing directly at CDN-hosted marker icons avoids broken/missing images.
@@ -102,7 +112,7 @@ export default function FindHealthcare() {
 
         <div className="flex items-center gap-3 mb-4">
           <div className="flex-1 relative">
-            <i className="ti ti-search absolute left-4 top-1/2 -translate-y-1/2 text-[#8a8a80]" aria-hidden="true" />
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a8a80]" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -114,7 +124,7 @@ export default function FindHealthcare() {
             onClick={useMyLocation}
             className="flex items-center gap-1.5 text-sm font-medium bg-[#1a4d4a] text-white rounded-full px-5 py-2.5 hover:bg-[#153f3c] transition-colors"
           >
-            <i className="ti ti-navigation text-base" aria-hidden="true" />
+            <Navigation size={16} />
             Use My Location
           </button>
         </div>
@@ -190,7 +200,7 @@ export default function FindHealthcare() {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex gap-3">
                   <div className="w-10 h-10 rounded-lg bg-[#d9f0ea] flex items-center justify-center flex-shrink-0">
-                    <i className="ti ti-building-hospital text-teal-700" aria-hidden="true" />
+                    <Building2 size={18} className="text-teal-700" />
                   </div>
                   <div>
                     <p className="font-semibold text-[#1a2e2e]">{f.name}</p>
@@ -199,13 +209,13 @@ export default function FindHealthcare() {
                         {typeLabel(f.facility_type)}
                       </span>
                       <span className="flex items-center gap-1">
-                        <i className="ti ti-map-pin text-xs" aria-hidden="true" />
+                        <MapPin size={12} />
                         {f.distance_km} km
                       </span>
                     </div>
                   </div>
                 </div>
-                <i className="ti ti-chevron-right text-[#8a8a80]" aria-hidden="true" />
+                <ChevronRight size={16} className="text-[#8a8a80]" />
               </div>
             </button>
           ))}
@@ -225,7 +235,7 @@ export default function FindHealthcare() {
               Facility detail
             </p>
             <button onClick={() => setSelected(null)} aria-label="Close">
-              <i className="ti ti-x text-[#8a8a80]" aria-hidden="true" />
+              <X size={16} className="text-[#8a8a80]" />
             </button>
           </div>
 
@@ -240,7 +250,7 @@ export default function FindHealthcare() {
             {selected.address && (
               <div>
                 <p className="text-xs text-[#8a8a80] flex items-center gap-1.5">
-                  <i className="ti ti-map-pin" aria-hidden="true" />
+                  <MapPin size={14} />
                   Address
                 </p>
                 <p className="text-sm text-[#1a2e2e] mt-0.5">{selected.address}</p>
@@ -249,7 +259,7 @@ export default function FindHealthcare() {
             {selected.phone && (
               <div>
                 <p className="text-xs text-[#8a8a80] flex items-center gap-1.5">
-                  <i className="ti ti-phone" aria-hidden="true" />
+                  <Phone size={14} />
                   Phone
                 </p>
                 <p className="text-sm text-[#1a2e2e] mt-0.5">{selected.phone}</p>
@@ -258,7 +268,7 @@ export default function FindHealthcare() {
             {selected.opening_hours && (
               <div>
                 <p className="text-xs text-[#8a8a80] flex items-center gap-1.5">
-                  <i className="ti ti-clock" aria-hidden="true" />
+                  <Clock size={14} />
                   Hours
                 </p>
                 <p className="text-sm text-[#1a2e2e] mt-0.5">{selected.opening_hours}</p>
@@ -266,7 +276,7 @@ export default function FindHealthcare() {
             )}
             <div>
               <p className="text-xs text-[#8a8a80] flex items-center gap-1.5">
-                <i className="ti ti-map-pin" aria-hidden="true" />
+                <MapPin size={14} />
                 Distance
               </p>
               <p className="text-sm text-[#1a2e2e] mt-0.5">{selected.distance_km} km</p>
@@ -280,7 +290,7 @@ export default function FindHealthcare() {
               rel="noreferrer"
               className="flex items-center justify-center gap-2 bg-[#1a4d4a] text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-[#153f3c] transition-colors"
             >
-              <i className="ti ti-navigation text-base" aria-hidden="true" />
+              <Navigation size={16} />
               Get Directions
             </a>
             {selected.phone && (
@@ -288,7 +298,7 @@ export default function FindHealthcare() {
                 href={`tel:${selected.phone}`}
                 className="flex items-center justify-center gap-2 border border-[#d8d5cb] rounded-lg px-4 py-2.5 text-sm font-medium text-[#4a4a44] hover:bg-[#f1efe6] transition-colors"
               >
-                <i className="ti ti-phone text-base" aria-hidden="true" />
+                <Phone size={16} />
                 Call {selected.phone}
               </a>
             )}

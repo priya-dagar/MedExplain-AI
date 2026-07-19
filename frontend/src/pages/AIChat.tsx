@@ -2,6 +2,7 @@ import { useState, FormEvent, useRef, useEffect } from "react";
 import { ChatMessage } from "../types/chat";
 import { useAuth } from "../context/AuthContext";
 import { sendMessage, getChatHistory } from "../services/chatService";
+import { RefreshCw, Sparkles, ChevronRight, Paperclip, ArrowUp } from "lucide-react";
 
 const SUGGESTED_CHIPS = [
   "What medication can I take?",
@@ -75,7 +76,7 @@ export default function AIChat() {
           onClick={handleNewChat}
           className="flex items-center gap-1.5 text-sm font-medium text-[#4a4a44] border border-[#d8d5cb] rounded-full px-4 py-1.5 hover:bg-[#f1efe6] transition-colors"
         >
-          <i className="ti ti-refresh text-base" aria-hidden="true" />
+          <RefreshCw size={16} />
           New chat
         </button>
       </div>
@@ -92,7 +93,7 @@ export default function AIChat() {
         {messages.length === 0 && (
           <div className="flex gap-3 max-w-2xl">
             <div className="w-9 h-9 rounded-full bg-[#1a4d4a] flex items-center justify-center flex-shrink-0">
-              <i className="ti ti-sparkles text-white text-base" aria-hidden="true" />
+              <Sparkles size={16} className="text-white" />
             </div>
             <div className="bg-white border border-[#e5e2d8] rounded-2xl rounded-tl-sm px-5 py-4 text-[#3d3d3a] text-sm leading-relaxed">
               Hello{user ? `, ${user.name.split(" ")[0]}` : ""}! I'm your AI Health Companion. I
@@ -109,7 +110,7 @@ export default function AIChat() {
           >
             {msg.role === "assistant" && (
               <div className="w-9 h-9 rounded-full bg-[#1a4d4a] flex items-center justify-center flex-shrink-0">
-                <i className="ti ti-sparkles text-white text-base" aria-hidden="true" />
+                <Sparkles size={16} className="text-white" />
               </div>
             )}
 
@@ -143,7 +144,7 @@ export default function AIChat() {
         {isSending && (
           <div className="flex gap-3">
             <div className="w-9 h-9 rounded-full bg-[#1a4d4a] flex items-center justify-center flex-shrink-0">
-              <i className="ti ti-sparkles text-white text-base" aria-hidden="true" />
+              <Sparkles size={16} className="text-white" />
             </div>
             <div className="bg-white border border-[#e5e2d8] rounded-2xl rounded-tl-sm px-5 py-3.5 text-sm text-[#8a8a80]">
               Thinking…
@@ -167,7 +168,7 @@ export default function AIChat() {
             disabled={isSending}
             className="flex items-center gap-1 text-sm text-[#4a4a44] border border-[#d8d5cb] rounded-full px-4 py-1.5 hover:bg-[#f1efe6] transition-colors disabled:opacity-50"
           >
-            <i className="ti ti-chevron-right text-xs" aria-hidden="true" />
+            <ChevronRight size={14} />
             {chip}
           </button>
         ))}
@@ -176,7 +177,7 @@ export default function AIChat() {
       {/* Input */}
       <form onSubmit={handleSubmit} className="border-t border-[#e5e2d8] bg-white px-6 py-4">
         <div className="flex items-center gap-3 bg-[#f5f3ed] rounded-full px-4 py-2">
-          <i className="ti ti-paperclip text-[#8a8a80] text-lg" aria-hidden="true" />
+          <Paperclip size={18} className="text-[#8a8a80]" />
           <input
             type="text"
             value={input}
@@ -190,7 +191,7 @@ export default function AIChat() {
             className="w-8 h-8 rounded-full bg-[#1a4d4a] text-white flex items-center justify-center disabled:opacity-40 transition-opacity"
             aria-label="Send message"
           >
-            <i className="ti ti-arrow-up text-base" aria-hidden="true" />
+            <ArrowUp size={16} />
           </button>
         </div>
         <p className="text-center text-xs text-[#8a8a80] mt-3">

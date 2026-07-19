@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getTimeline } from "../services/healthRecordService";
 import { HealthRecordItem } from "../types/healthRecord";
+import { Search, SlidersHorizontal, Pill, MessageCircle, ChevronRight, X, Calendar } from "lucide-react";
 
 type FilterKey = "all" | "symptom" | "prescription" | "ai_chat";
 
@@ -31,6 +32,14 @@ function recordBadge(r: HealthRecordItem) {
   return "AI Chat";
 }
 
+function RecordIcon({ type, size = 16 }: { type: string; size?: number }) {
+  return type === "prescription" ? (
+    <Pill size={size} className="text-purple-600" />
+  ) : (
+    <MessageCircle size={size} className="text-teal-700" />
+  );
+}
+
 export default function HealthRecords() {
   const [records, setRecords] = useState<HealthRecordItem[]>([]);
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
@@ -58,7 +67,7 @@ export default function HealthRecords() {
         {/* Search + filter row */}
         <div className="flex items-center gap-3 mb-4">
           <div className="flex-1 relative">
-            <i className="ti ti-search absolute left-4 top-1/2 -translate-y-1/2 text-[#8a8a80]" aria-hidden="true" />
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a8a80]" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -67,7 +76,7 @@ export default function HealthRecords() {
             />
           </div>
           <button className="flex items-center gap-1.5 text-sm font-medium border border-[#d8d5cb] rounded-full px-4 py-2.5 text-[#4a4a44] hover:bg-[#f1efe6]">
-            <i className="ti ti-adjustments-horizontal text-base" aria-hidden="true" />
+            <SlidersHorizontal size={16} />
             Filter
           </button>
         </div>
@@ -110,14 +119,7 @@ export default function HealthRecords() {
                       r.record_type === "prescription" ? "bg-[#e9e0f5]" : "bg-[#d9f0ea]"
                     }`}
                   >
-                    <i
-                      className={`ti ${
-                        r.record_type === "prescription" ? "ti-pill" : "ti-message-circle"
-                      } text-base ${
-                        r.record_type === "prescription" ? "text-purple-600" : "text-teal-700"
-                      }`}
-                      aria-hidden="true"
-                    />
+                    <RecordIcon type={r.record_type} />
                   </div>
                   {!isLast && <div className="w-px flex-1 bg-[#e5e2d8] mt-1" />}
                 </div>
@@ -144,7 +146,7 @@ export default function HealthRecords() {
                       <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#d9f0ea] text-teal-800">
                         {recordBadge(r)}
                       </span>
-                      <i className="ti ti-chevron-right text-[#8a8a80]" aria-hidden="true" />
+                      <ChevronRight size={16} className="text-[#8a8a80]" />
                     </div>
                   </div>
                 </button>
@@ -166,17 +168,12 @@ export default function HealthRecords() {
               Record detail
             </p>
             <button onClick={() => setSelected(null)} aria-label="Close">
-              <i className="ti ti-x text-[#8a8a80]" aria-hidden="true" />
+              <X size={16} className="text-[#8a8a80]" />
             </button>
           </div>
 
           <div className="flex items-center gap-2 text-sm text-teal-700 mb-2">
-            <i
-              className={`ti ${
-                selected.record_type === "prescription" ? "ti-pill" : "ti-message-circle"
-              }`}
-              aria-hidden="true"
-            />
+            <RecordIcon type={selected.record_type} size={16} />
             {recordBadge(selected)}
           </div>
           <h2 className="font-serif text-xl font-bold text-[#1a2e2e] mb-4">
@@ -185,7 +182,7 @@ export default function HealthRecords() {
 
           <div className="bg-white rounded-lg p-3 mb-4">
             <p className="text-xs text-[#8a8a80] flex items-center gap-1.5">
-              <i className="ti ti-calendar" aria-hidden="true" />
+              <Calendar size={14} />
               Date
             </p>
             <p className="text-sm font-medium text-[#1a2e2e] mt-0.5">

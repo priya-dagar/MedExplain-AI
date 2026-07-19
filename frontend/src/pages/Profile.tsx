@@ -1,5 +1,6 @@
 import { useEffect, useState, KeyboardEvent } from "react";
 import api from "../services/api";
+import { X } from "lucide-react";
 
 interface ProfileData {
   name: string;
@@ -148,7 +149,7 @@ export default function Profile() {
             >
               {allergy}
               <button onClick={() => removeAllergy(allergy)} aria-label={`Remove ${allergy}`}>
-                <i className="ti ti-x text-xs" aria-hidden="true" />
+                <X size={12} />
               </button>
             </span>
           ))}

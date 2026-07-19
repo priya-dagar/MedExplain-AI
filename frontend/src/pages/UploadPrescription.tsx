@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import api from "../services/api"; // adjust path to match your project structure
+import { FileText, ScanLine } from "lucide-react";
 
 interface UploadResult {
   image_url: string;
@@ -96,7 +97,7 @@ export default function UploadPrescription() {
             }`}
           >
             <div className="w-14 h-14 rounded-lg bg-[#dcecea] flex items-center justify-center mb-5">
-              <i className="ti ti-file-description text-2xl text-teal-700" aria-hidden="true" />
+              <FileText size={24} className="text-teal-700" />
             </div>
 
             {!file ? (
@@ -165,7 +166,7 @@ export default function UploadPrescription() {
             {status !== "done" ? (
               <>
                 <div className="w-14 h-14 rounded-lg bg-[#e9e6dd] flex items-center justify-center mb-5">
-                  <i className="ti ti-scan text-2xl text-[#8a8a80]" aria-hidden="true" />
+                  <ScanLine size={24} className="text-[#8a8a80]" />
                 </div>
                 <p className="font-semibold text-[#1a2e2e] text-lg mb-1">AI Analysis</p>
                 <p className="text-sm text-[#8a8a80]">
