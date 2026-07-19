@@ -11,6 +11,7 @@ import HealthRecords from "./pages/HealthRecords";
 import VerifyOtp from "./pages/VerifyOtp";
 import Profile from "./pages/Profile";
 import FindHealthcare from "./pages/Findhealthcare";
+import Landing from "./pages/Landing";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
         </Route>
 
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Landing />} />
       </Routes>
     </AuthProvider>
   );
