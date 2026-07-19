@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import { useAuth } from "../context/AuthContext";
 
 // Maps route paths to the breadcrumb label + icon shown in the top bar.
 // Extend this whenever you add a new page.
@@ -18,8 +19,9 @@ export default function Layout() {
   const meta = PAGE_META[location.pathname] ?? { label: "", icon: "" };
 
   // TODO: replace with real user data from AuthContext
-  const userInitial = "P";
-  const userName = "Priya";
+  const { user } = useAuth();
+  const userName = user?.name || "User";
+  const userInitial = userName.charAt(0).toUpperCase();
 
   return (
     <div className="flex min-h-screen bg-[#f5f3ed]">
