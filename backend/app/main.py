@@ -18,7 +18,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://medexplain-frontend.vercel.app", "http://localhost:5173"],
+    allow_origins=["https://medexplain-frontend.vercel.app", "http://localhost:5173", "https://priyadagar.site"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
