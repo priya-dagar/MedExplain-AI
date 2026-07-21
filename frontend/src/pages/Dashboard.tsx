@@ -129,7 +129,7 @@ export default function Dashboard() {
               <FileText size={16} className="text-teal-700" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-[#1a2e2e]">{item.summary}</p>
+              <p className="text-sm font-medium text-[#1a2e2e] line-clamp-2">{item.summary}</p>
               <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
                 <Clock size={12} />
                 {new Date(item.created_at).toLocaleString("en-US", {
