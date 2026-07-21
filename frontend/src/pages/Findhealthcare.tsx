@@ -14,6 +14,7 @@ import {
   Clock,
 } from "lucide-react";
 
+
 // Local Leaflet image imports are unreliable with Vite's asset handling —
 // pointing directly at CDN-hosted marker icons avoids broken/missing images.
 L.Icon.Default.mergeOptions({
@@ -82,9 +83,12 @@ export default function FindHealthcare() {
     useMyLocation();
   }, []);
 
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!coords) return;
     setLoading(true);
+    setFetchError(null);
     api
       .get("/api/healthcare/nearby", {
         params: {
@@ -93,7 +97,15 @@ export default function FindHealthcare() {
           facility_type: activeFilter === "all" ? undefined : activeFilter,
         },
       })
-      .then((res) => setFacilities(res.data.results))
+      .then((res) => {
+        setFacilities(res.data.results);
+        if (res.data.error) {
+          setFetchError(res.data.error);
+        }
+      })
+      .catch(() => {
+        setFetchError("Couldn't load nearby facilities. Please try again in a moment.");
+      })
       .finally(() => setLoading(false));
   }, [coords, activeFilter]);
 
@@ -130,6 +142,7 @@ export default function FindHealthcare() {
         </div>
 
         {locError && <p className="text-sm text-red-600 mb-3">{locError}</p>}
+        {fetchError && <p className="text-sm text-red-600 mb-3">{fetchError}</p>}
 
         <div className="flex flex-wrap gap-2 mb-6">
           {FILTERS.map((f) => (
