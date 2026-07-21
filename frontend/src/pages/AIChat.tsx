@@ -6,7 +6,7 @@ import { RefreshCw, Sparkles, ChevronRight, Paperclip, ArrowUp } from "lucide-re
 
 const SUGGESTED_CHIPS = [
   "What medication can I take?",
-  "Could it be related to my Metformin?",
+  "Could it be related to my Allergies?",
   "Add to my health records",
 ];
 
@@ -29,8 +29,8 @@ export default function AIChat() {
   useEffect(() => {
     getChatHistory().then((history) => {
       const loaded: ChatMessage[] = history.flatMap((turn) => [
-        { role: "user", content: turn.message },
-        { role: "assistant", content: turn.response },
+        { role: "user", content: turn.message, timestamp: new Date(turn.created_at) },
+        { role: "assistant", content: turn.response, timestamp: new Date(turn.created_at) },
       ]);
       setMessages(loaded);
     });
@@ -39,7 +39,7 @@ export default function AIChat() {
   const submitMessage = async (text: string) => {
     if (!text.trim() || isSending) return;
 
-    const userMessage: ChatMessage = { role: "user", content: text };
+    const userMessage: ChatMessage = { role: "user", content: text, timestamp: new Date() };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setError("");
@@ -47,7 +47,7 @@ export default function AIChat() {
 
     try {
       const data = await sendMessage(text);
-      setMessages((prev) => [...prev, { role: "assistant", content: data.response }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: data.response, timestamp: new Date() }]);
     } catch (err: any) {
       setError(err.response?.data?.detail || "Something went wrong. Please try again.");
     } finally {
@@ -129,7 +129,7 @@ export default function AIChat() {
                   msg.role === "user" ? "text-right" : ""
                 }`}
               >
-                {formatTime(new Date())}
+                {formatTime(msg.timestamp)}
               </p>
             </div>
 
