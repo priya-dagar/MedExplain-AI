@@ -35,7 +35,8 @@ def chat(
     if result["intent"] == "symptom":
         add_health_record(
             db=db, user_id=current_user.id, record_type="symptom",
-            source_id=saved.id, summary=request.message[:100],
+            source_id=saved.id,
+            summary=f"Q: {request.message}\nA: {result['response']}",
         )
 
     return ChatResponse(response=result["response"], intent=result["intent"])

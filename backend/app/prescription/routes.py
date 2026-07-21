@@ -41,7 +41,7 @@ async def upload_prescription(
         user_id=current_user.id,
         record_type="prescription",
         source_id=prescription.id,
-        summary=prescription.ai_summary[:100],
+        summary=prescription.ai_summary,
     )
 
     return prescription
