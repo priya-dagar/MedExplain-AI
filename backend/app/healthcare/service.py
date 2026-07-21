@@ -10,7 +10,10 @@ fields are intentionally omitted rather than faked.
 import httpx
 from typing import Optional
 
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+OVERPASS_URLS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+]
 
 # Maps our facility_type filter to OSM tag queries.
 OSM_TAG_QUERIES = {
@@ -46,6 +49,11 @@ def _haversine_km(lat1, lng1, lat2, lng2) -> float:
     return R * 2 * atan2(sqrt(a), sqrt(1 - a))
 
 
+class HealthcareSearchUnavailable(Exception):
+    """Raised when all Overpass mirrors fail or time out."""
+    pass
+
+
 def search_nearby_facilities(
     lat: float,
     lng: float,
@@ -53,18 +61,31 @@ def search_nearby_facilities(
     facility_type: Optional[str] = None,
 ) -> list[dict]:
     query = _build_query(lat, lng, radius_m, facility_type)
+    data = None
+    last_error = None
 
-    with httpx.Client(timeout=30) as client:
-        response = client.post(
-            OVERPASS_URL,
-            data={"data": query},
-            headers={
-                "User-Agent": "MedExplainAI/1.0 (contact: priyadagar0044@gmail.com)",
-                "Accept": "application/json",
-            },
-        )
-        response.raise_for_status()
-        data = response.json()
+    for url in OVERPASS_URLS:
+        try:
+            with httpx.Client(timeout=20) as client:
+                response = client.post(
+                    url,
+                    data={"data": query},
+                    headers={
+                        "User-Agent": "MedExplainAI/1.0 (contact: priyadagar0044@gmail.com)",
+                        "Accept": "application/json",
+                    },
+                )
+                response.raise_for_status()
+                data = response.json()
+                break  # success, stop trying mirrors
+        except (httpx.HTTPStatusError, httpx.TimeoutException, httpx.ConnectError) as e:
+            last_error = e
+            continue  # try next mirror
+
+    if data is None:
+        raise HealthcareSearchUnavailable(str(last_error))
+
+    results = []
 
     results = []
     for el in data.get("elements", []):
