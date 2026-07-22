@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getTimeline } from "../services/healthRecordService";
 import { HealthRecordItem } from "../types/healthRecord";
 import { Search, SlidersHorizontal, Pill, MessageCircle, ChevronRight, X, Calendar } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 type FilterKey = "all" | "symptom" | "prescription" | "ai_chat";
 
@@ -193,9 +194,9 @@ export default function HealthRecords() {
           <p className="text-xs font-mono tracking-widest text-[#8a8a80] uppercase mb-2">
             Summary
           </p>
-          <p className="text-sm text-[#3d3d3a] leading-relaxed whitespace-pre-wrap">
-            {selected.summary}
-          </p>
+          <div className="text-sm text-[#3d3d3a] leading-relaxed prose prose-sm max-w-none prose-headings:text-[#1a2e2e] prose-strong:text-[#1a2e2e]">
+            <ReactMarkdown>{selected.summary}</ReactMarkdown>
+          </div>
         </div>
       )}
     </div>

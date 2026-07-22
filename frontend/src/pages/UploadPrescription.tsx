@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import api from "../services/api"; // adjust path to match your project structure
 import { FileText, ScanLine } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface UploadResult {
   image_url: string;
@@ -21,7 +22,7 @@ export default function UploadPrescription() {
   const validateAndSet = useCallback((f: File) => {
     setErrorMsg(null);
     if (!ACCEPTED_TYPES.includes(f.type)) {
-      setErrorMsg("Unsupported file type. Use JPG, PNG, HEIC, or PDF.");
+      setErrorMsg("Unsupported file type. Use JPG, PNG, HEIC.");
       return;
     }
     if (f.size > MAX_SIZE_MB * 1024 * 1024) {
@@ -176,9 +177,9 @@ export default function UploadPrescription() {
             ) : (
               <div className="text-left w-full">
                 <p className="font-semibold text-[#1a2e2e] text-lg mb-3">Summary</p>
-                <p className="text-[#3d3d3a] leading-relaxed whitespace-pre-wrap">
-                  {result?.ai_summary}
-                </p>
+                <div className="text-[#3d3d3a] leading-relaxed prose prose-sm max-w-none prose-headings:text-[#1a2e2e] prose-strong:text-[#1a2e2e]">
+                  <ReactMarkdown>{result?.ai_summary ?? ""}</ReactMarkdown>
+                </div>
               </div>
             )}
           </div>

@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -32,6 +32,7 @@ export default function Layout() {
   const { user } = useAuth();
   const userName = user?.name || "User";
   const userInitial = userName.charAt(0).toUpperCase();
+  const navigate = useNavigate();
 
   return (
     <div className="flex min-h-screen bg-[#f5f3ed]">
@@ -49,12 +50,16 @@ export default function Layout() {
               <Bell size={20} />
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-teal-500" />
             </button>
-            <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate("/profile")}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              aria-label="Go to profile"
+            >
               <div className="w-8 h-8 rounded-full bg-[#1a4d4a] text-white flex items-center justify-center text-sm font-semibold">
                 {userInitial}
               </div>
               <span className="text-sm font-medium text-[#1a2e2e]">{userName}</span>
-            </div>
+            </button>
           </div>
         </header>
 

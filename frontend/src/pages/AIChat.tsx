@@ -3,6 +3,7 @@ import { ChatMessage } from "../types/chat";
 import { useAuth } from "../context/AuthContext";
 import { sendMessage, getChatHistory } from "../services/chatService";
 import { RefreshCw, Sparkles, ChevronRight, Paperclip, ArrowUp } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 const SUGGESTED_CHIPS = [
   "What medication can I take?",
@@ -116,13 +117,17 @@ export default function AIChat() {
 
             <div className="max-w-[70%]">
               <div
-                className={`px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                className={`px-5 py-3.5 text-sm leading-relaxed ${
                   msg.role === "user"
-                    ? "bg-[#1a4d4a] text-white rounded-2xl rounded-tr-sm"
-                    : "bg-white border border-[#e5e2d8] text-[#3d3d3a] rounded-2xl rounded-tl-sm"
+                    ? "bg-[#1a4d4a] text-white rounded-2xl rounded-tr-sm whitespace-pre-wrap"
+                    : "bg-white border border-[#e5e2d8] text-[#3d3d3a] rounded-2xl rounded-tl-sm prose prose-sm max-w-none prose-headings:text-[#1a2e2e] prose-strong:text-[#1a2e2e]"
                 }`}
               >
-                {msg.content}
+                {msg.role === "assistant" ? (
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                ) : (
+                  msg.content
+                )}
               </div>
               <p
                 className={`text-xs text-[#8a8a80] mt-1 ${
