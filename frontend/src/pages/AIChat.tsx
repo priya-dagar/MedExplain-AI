@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { sendMessage, getChatHistory } from "../services/chatService";
 import { RefreshCw, Sparkles, ChevronRight, Paperclip, ArrowUp } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { v4 as uuidv4 } from "uuid";
 
 const SUGGESTED_CHIPS = [
   "What medication can I take?",
@@ -22,20 +23,29 @@ export default function AIChat() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const CONVERSATION_KEY = "medexplain_conversation_id";
+
+  const [conversationId, setConversationId] = useState<string>(() => {
+  const stored = localStorage.getItem(CONVERSATION_KEY);
+    if (stored) return stored;
+    const fresh = uuidv4();
+    localStorage.setItem(CONVERSATION_KEY, fresh);
+    return fresh;
+  });
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
-    getChatHistory().then((history) => {
+    getChatHistory(conversationId).then((history) => {
       const loaded: ChatMessage[] = history.flatMap((turn) => [
         { role: "user", content: turn.message, timestamp: new Date(turn.created_at) },
         { role: "assistant", content: turn.response, timestamp: new Date(turn.created_at) },
       ]);
       setMessages(loaded);
     });
-  }, []);
+  }, [conversationId]);;
 
   const submitMessage = async (text: string) => {
     if (!text.trim() || isSending) return;
@@ -47,7 +57,7 @@ export default function AIChat() {
     setIsSending(true);
 
     try {
-      const data = await sendMessage(text);
+      const data = await sendMessage(text, conversationId);
       setMessages((prev) => [...prev, { role: "assistant", content: data.response, timestamp: new Date() }]);
     } catch (err: any) {
       setError(err.response?.data?.detail || "Something went wrong. Please try again.");
@@ -59,12 +69,14 @@ export default function AIChat() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     submitMessage(input);
-  };
+  };  
 
   const handleNewChat = () => {
-    // Clears the visible thread only — does not delete server-side chat_history.
     setMessages([]);
     setError("");
+    const fresh = uuidv4();
+    localStorage.setItem(CONVERSATION_KEY, fresh);
+    setConversationId(fresh);
   };
 
   const userInitial = user?.name?.[0]?.toUpperCase() ?? "U";
