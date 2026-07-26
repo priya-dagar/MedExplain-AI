@@ -154,7 +154,7 @@ medexplain-ai/
 ## 👤 Author
 
 **Priya Dagar** — B.Tech CSE (AI & ML)
-· [LinkedIn](linkedin.com/in/priya-dagar-64b775286) 
+· [LinkedIn](https://www.linkedin.com/in/priya-dagar-64b775286)
 
 ---
 
