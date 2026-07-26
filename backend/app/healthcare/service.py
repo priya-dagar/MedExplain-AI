@@ -13,6 +13,7 @@ from typing import Optional
 OVERPASS_URLS = [
     "https://overpass-api.de/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
 ]
 
 # Maps our facility_type filter to OSM tag queries.
