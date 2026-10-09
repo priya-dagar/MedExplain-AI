@@ -3,6 +3,7 @@
 An AI-powered assistant that helps people understand their prescriptions, chat about their health in plain language, keep a personal health record, and find nearby healthcare — all in one platform.
 
 🔗 **Live App:** [MedExplain](https://priyadagar.site/)
+🔗 **Demo Video:** [MedExplain](https://www.youtube.com/watch?v=eKg9Vm_ABzY&t=88s)
 
 ---
 
